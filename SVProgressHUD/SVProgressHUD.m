@@ -44,6 +44,7 @@ static const CGFloat SVProgressHUDLabelSpacing = 8.0f;
 @property (nonatomic, strong) UILabel *statusLabel;
 @property (nonatomic, strong) UIImageView *imageView;
 
+@property (strong, nonatomic) UIView* customAnimatedView;
 @property (nonatomic, strong) UIView *indefiniteAnimatedView;
 @property (nonatomic, strong) SVProgressAnimatedView *ringView;
 @property (nonatomic, strong) SVProgressAnimatedView *backgroundRingView;
@@ -212,6 +213,10 @@ static const CGFloat SVProgressHUDLabelSpacing = 8.0f;
 }
 
 #pragma mark - Show Methods
+
++ (void)setCustomAnimatedView:(UIView *)view {
+    [self sharedView].customAnimatedView = view;
+}
 
 + (void)show {
     [self showWithStatus:nil];
@@ -1095,20 +1100,28 @@ static const CGFloat SVProgressHUDLabelSpacing = 8.0f;
         
         // Update styling
         SVIndefiniteAnimatedView *indefiniteAnimatedView = (SVIndefiniteAnimatedView*)_indefiniteAnimatedView;
-        indefiniteAnimatedView.strokeColor = self.foregroundImageColorForStyle;
+        indefiniteAnimatedView.strokeColor = [UIColor greenColor];//self.foregroundImageColorForStyle;
         indefiniteAnimatedView.strokeThickness = self.ringThickness;
         indefiniteAnimatedView.radius = self.statusLabel.text ? self.ringRadius : self.ringNoTextRadius;
-    } else {
+    }else if(self.defaultAnimationType == SVProgressHUDAnimationTypeCustom && self.customAnimatedView) {
+        if(_indefiniteAnimatedView && _indefiniteAnimatedView != self.customAnimatedView){
+            [_indefiniteAnimatedView removeFromSuperview];
+            _indefiniteAnimatedView = nil;
+        }
+        if(!_indefiniteAnimatedView){
+            _indefiniteAnimatedView = self.customAnimatedView;
+        }
+    }else {
         // Check if spinner exists and is an object of different class
         if(_indefiniteAnimatedView && ![_indefiniteAnimatedView isKindOfClass:[UIActivityIndicatorView class]]){
             [_indefiniteAnimatedView removeFromSuperview];
             _indefiniteAnimatedView = nil;
         }
-        
+
         if(!_indefiniteAnimatedView){
             _indefiniteAnimatedView = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleWhiteLarge];
         }
-        
+
         // Update styling
         UIActivityIndicatorView *activityIndicatorView = (UIActivityIndicatorView*)_indefiniteAnimatedView;
         activityIndicatorView.color = self.foregroundImageColorForStyle;
