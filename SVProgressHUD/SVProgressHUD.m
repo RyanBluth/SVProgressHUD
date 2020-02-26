@@ -1100,7 +1100,7 @@ static const CGFloat SVProgressHUDLabelSpacing = 8.0f;
         
         // Update styling
         SVIndefiniteAnimatedView *indefiniteAnimatedView = (SVIndefiniteAnimatedView*)_indefiniteAnimatedView;
-        indefiniteAnimatedView.strokeColor = [UIColor greenColor];//self.foregroundImageColorForStyle;
+        indefiniteAnimatedView.strokeColor = self.foregroundImageColorForStyle;
         indefiniteAnimatedView.strokeThickness = self.ringThickness;
         indefiniteAnimatedView.radius = self.statusLabel.text ? self.ringRadius : self.ringNoTextRadius;
     }else if(self.defaultAnimationType == SVProgressHUDAnimationTypeCustom && self.customAnimatedView) {
